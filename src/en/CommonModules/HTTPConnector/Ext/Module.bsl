@@ -2322,7 +2322,7 @@ Procedure PrepareAuthenticationAWS4(PreparedRequest)
 	ScopeDate = Format(CurrentTime, "ДФ=yyyyMMdd");
 
 	PreparedRequest.Headers["x-amz-content-sha256"] =
-		DataHashing(HashFunction.SHA256, PreparedRequest.HTTPRequest.GetBodyAsStream());
+		DataHashing(HashFunction.SHA256, PreparedRequest.HTTPRequest.GetBodyAsBinaryData());
 
 	URLComposition = ParseURL(PreparedRequest.URL);
 
@@ -2817,6 +2817,8 @@ Function DataHashing(Val Algorithm, Val Data)
 
 	If TypeOf(Data) = Type("String") Then
 		Data = GetBinaryDataFromString(Data, TextEncoding.UTF8, False);
+	ElsIf Data = Undefined Then
+		Data = GetBinaryDataFromString("", TextEncoding.UTF8, False);
 	EndIf;
 
 	Hashing = New DataHashing(Algorithm);
